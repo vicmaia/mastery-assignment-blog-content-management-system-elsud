@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 @Repository
 @Profile("prod")
@@ -20,13 +19,26 @@ public class TagDaoDbImpl implements TagDao {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public Tag getTag(int id) {
-        final String GET_SQL = "SELECT * FROM tag WHERE id = ?;";
-        return jdbcTemplate.queryForObject(GET_SQL, new TagMapper(), id);
+    public Tag getTagByName(String name) {
+        final String GET_SQL = "SELECT * FROM tag WHERE name= ?;";
+        return jdbcTemplate.queryForObject(GET_SQL, new TagMapper(), name);
     }
 
     @Override
+    public void addTagForPost(Tag tag, int postId) {
+
+        final String ADD_TAG_CONN = "INSERT INTO postTag (postId, tagId) VALUES (?,?);";
+        jdbcTemplate.update(ADD_TAG_CONN, postId, tag.getId());
+    }
+
+    @Override
+    public void deleteTagForPost(int tagId, int postId) {
+        final String DELETE_TAG_CONN ="DELETE FROM postTag WHERE postId = ? AND tagId = ?;";
+        jdbcTemplate.update(DELETE_TAG_CONN, postId, tagId);
+    }
+
     @Transactional
+    @Override
     public Tag addTag(Tag tag) {
         final String INSERT_SQL = "INSERT INTO tag (name) VALUES (?);";
         jdbcTemplate.update(INSERT_SQL, tag.getName());
@@ -36,7 +48,6 @@ public class TagDaoDbImpl implements TagDao {
     }
 
     public static final class TagMapper implements RowMapper<Tag> {
-
         @Override
         public Tag mapRow(ResultSet resultSet, int i) throws SQLException {
             Tag tag = new Tag();

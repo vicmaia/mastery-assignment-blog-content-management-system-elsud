@@ -3,6 +3,7 @@ package cms.blog.dao;
 import cms.blog.dto.Post;
 import cms.blog.dto.RejectedPost;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PostDao {
@@ -15,17 +16,21 @@ public interface PostDao {
 
     public Post getPostById(int id);
 
-    public List<Post> getPosts();
+    public RejectedPost getRejectedPostById(int id);
 
-    public List<Post> getPosts(int tagId);
+    public List<Post> getApprovedPostsForAdmin();
 
-    public List<Post> getApprovedPosts();
+    public List<Post> getPostsByTagForAdmin(int tagId);
+
+    public List<Post> getPostsByTagForUser(int tagId);
+
+    public List<Post> getApprovedPostsForUser();
 
     public List<Post> getNotApprovedPosts();
 
     public List<RejectedPost> getRejectedPosts();
 
-    public void approvePost(int postId);
+    public void approvePost(int postId, LocalDateTime creationTime);
 
     public void rejectPost(int postId, String reason);
 

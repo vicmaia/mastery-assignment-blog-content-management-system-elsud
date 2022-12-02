@@ -1,11 +1,14 @@
 package cms.blog.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class RejectedPost {
 
     private int id;
+
+    private LocalDateTime creationTime;
     private String title;
     private String description;
     private String text;
@@ -22,6 +25,14 @@ public class RejectedPost {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
     }
 
     public String getTitle() {

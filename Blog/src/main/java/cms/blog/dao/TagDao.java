@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface TagDao {
 
-    public Tag getTag(int id);
-
     public Tag addTag(Tag tag);
+
+    public Tag getTagByName(String name);
+
+    public void addTagForPost(Tag tag, int postId);
+
+    public void deleteTagForPost(int tagId, int postId);
 }
