@@ -43,8 +43,15 @@ public class ServiceLayer {
         setPostDate(post);
         switch(permission) {
             case ADMIN:
-            case MANAGER:
                 return postDao.editPost(post);
+            case MANAGER:
+                switch (post.getStatus()) {
+                    case IN_WORK:
+                    case REJECTED:
+                        return postDao.editPost(post);
+                    default:
+                        throw new AuthorizationException("Access denied!");
+                }
             default:
                 throw new AuthorizationException("Access denied!");
         }
@@ -63,10 +70,18 @@ public class ServiceLayer {
     }
 
     public boolean deletePost(int id, Permission permission) throws AuthorizationException {
+        Status status = postDao.getPostById(id).getStatus();
         switch(permission) {
             case ADMIN:
-            case MANAGER:
                 return postDao.deletePost(id);
+            case MANAGER:
+                switch (status) {
+                    case IN_WORK:
+                    case REJECTED:
+                        return postDao.deletePost(id);
+                    default:
+                        throw new AuthorizationException("Access denied!");
+                }
             default:
                 throw new AuthorizationException("Access denied!");
         }
