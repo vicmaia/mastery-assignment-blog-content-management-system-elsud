@@ -90,7 +90,7 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     @Transactional
     public boolean deletePost(int id ) {
-        final String DELETE_TAG_CONN = "DELETE FROM postTag WHERE postId = ?'";
+        final String DELETE_TAG_CONN = "DELETE FROM postTag WHERE postId = ?;";
         final String DELETE_REJECTED_POST = "DELETE FROM rejectedPost WHERE id = ?;";
         final String DELETE_POST = "DELETE FROM post WHERE id = ?;";
         jdbcTemplate.update(DELETE_TAG_CONN, id);
@@ -101,7 +101,7 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     public Post getPostById(int id) {
         final String GET_SQL = "SELECT * FROM post INNER JOIN status "
-                + "ON post.status = status.id WHERE status.id = ?;";
+                + "ON post.status = status.id WHERE post.id = ?;";
         try {
             Post post = jdbcTemplate.queryForObject(GET_SQL, new PostMapper(), id);
             post.setTags(getTags(id));
@@ -138,7 +138,7 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     public List<Post> getApprovedPostsForUser() {
         final String GET_SQL = "SELECT * FROM post INNER JOIN status ON "
-                + "post.status = status.id WHERE status.name = ? "
+                + "post.status = status.id WHERE status.name LIKE ? "
                 + "AND (displayDate IS NULL OR displayDate <= ?) "
                 + "AND (expireDate IS NULL OR expireDate >= ?) ORDER BY post.creationTime DESC;";
         List<Post> posts =  jdbcTemplate.query(
@@ -153,7 +153,7 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     public List<Post> getPostsByTagForAdmin(int tagId) {
         final String GET_SQL = "SELECT * FROM post INNER JOIN status ON post.status = status.id "
-                + "INNER JOIN postTag ON post.id = postTag.postId WHERE postTag.tagId = ? and status.name = ? "
+                + "INNER JOIN postTag ON post.id = postTag.postId WHERE postTag.tagId = ? and status.name LIKE ? "
                 + "ORDER BY post.creationTime DESC;";
         List<Post> posts =  jdbcTemplate.query(GET_SQL, new PostMapper(), tagId, Status.APPROVED.toString());
         posts.stream()
@@ -168,7 +168,8 @@ public class PostDaoDbImpl implements PostDao {
                 + "AND (displayDate IS NULL OR displayDate <= ?) AND (expireDate IS NULL OR expireDate >= ?) "
                 + "ORDER BY post.creationTime DESC;";
         List<Post> posts =  jdbcTemplate.query(
-                GET_SQL, new PostMapper(), tagId, Status.APPROVED.toString(), Timestamp.valueOf(LocalDateTime.now()));
+                GET_SQL, new PostMapper(), tagId, Status.APPROVED.toString(),
+                Timestamp.valueOf(LocalDateTime.now()), Timestamp.valueOf(LocalDateTime.now()));
         posts.stream()
                 .forEach(post ->post.setTags(getTags(post.getId())));
         return posts;
@@ -229,13 +230,17 @@ public class PostDaoDbImpl implements PostDao {
                 GET_STATUS_ID, Integer.class, Status.IN_WORK.toString());
 
         final String GET_DISPLAY_TIME = "SELECT displayDate FROM post WHERE id = ?;";
-        Timestamp displayTime = jdbcTemplate.queryForObject(GET_DISPLAY_TIME, Timestamp.class, postId);
         Timestamp timeNow = Timestamp.valueOf(LocalDateTime.now());
-        if (displayTime == null || displayTime.compareTo(timeNow) < 0) {
-            displayTime = timeNow;
+        try {
+            Timestamp displayTime = jdbcTemplate.queryForObject(GET_DISPLAY_TIME, Timestamp.class, postId);
+            if (displayTime.compareTo(timeNow) >= 0) {
+                timeNow = displayTime;
+            }
+        } catch (DataAccessException ex) {
+
         }
         final String UPDATE_STATUS_SQL = "UPDATE post SET status=?, creationTime=? WHERE id = ?;";
-        jdbcTemplate.update(UPDATE_STATUS_SQL, statusId, displayTime, postId);
+        jdbcTemplate.update(UPDATE_STATUS_SQL, statusId, timeNow, postId);
 
         final String DELETE_REJECTED = "DELETE FROM rejectedPost WHERE id = ?;";
         jdbcTemplate.update(DELETE_REJECTED, postId);
@@ -264,11 +269,11 @@ public class PostDaoDbImpl implements PostDao {
             }
             Timestamp expireDate = resultSet.getTimestamp("post.expireDate");
             if (expireDate != null) {
-                post.setDisplayDate(expireDate.toLocalDateTime().toLocalDate());
+                post.setExpireDate(expireDate.toLocalDateTime().toLocalDate());
             }
             Timestamp creationTime = resultSet.getTimestamp("post.creationTime");
             if (creationTime != null) {
-                post.setDisplayDate(creationTime.toLocalDateTime().toLocalDate());
+                post.setCreationTime(creationTime.toLocalDateTime());
             }
             return post;
         }
@@ -290,11 +295,11 @@ public class PostDaoDbImpl implements PostDao {
             }
             Timestamp expireDate = resultSet.getTimestamp("post.expireDate");
             if (expireDate != null) {
-                post.setDisplayDate(expireDate.toLocalDateTime().toLocalDate());
+                post.setExpireDate(expireDate.toLocalDateTime().toLocalDate());
             }
             Timestamp creationTime = resultSet.getTimestamp("post.creationTime");
             if (creationTime != null) {
-                post.setDisplayDate(creationTime.toLocalDateTime().toLocalDate());
+                post.setCreationTime(creationTime.toLocalDateTime());
             }
             //post.setDisplayDate(resultSet.getTimestamp("post.displayDate").toLocalDateTime().toLocalDate());
             //post.setExpireDate(resultSet.getTimestamp("post.expireDate").toLocalDateTime().toLocalDate());

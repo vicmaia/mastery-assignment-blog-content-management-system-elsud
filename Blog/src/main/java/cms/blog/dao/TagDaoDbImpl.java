@@ -21,7 +21,7 @@ public class TagDaoDbImpl implements TagDao {
 
     @Override
     public Tag getTagByName(String name) {
-        final String GET_SQL = "SELECT * FROM tag WHERE name= ?;";
+        final String GET_SQL = "SELECT * FROM tag WHERE name LIKE ?;";
         try {
             return jdbcTemplate.queryForObject(GET_SQL, new TagMapper(), name);
         } catch (DataAccessException ex) {
