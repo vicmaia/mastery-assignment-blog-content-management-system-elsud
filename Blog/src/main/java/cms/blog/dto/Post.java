@@ -67,12 +67,20 @@ public class Post {
         this.displayDate = displayDate;
     }
 
+     public void setDisplayDate(String displayDate) {
+        this.displayDate = LocalDate.parse(displayDate);
+    }
+
     public LocalDate getExpireDate() {
         return expireDate;
     }
 
     public void setExpireDate(LocalDate expireDate) {
         this.expireDate = expireDate;
+    }
+
+     public void setExpireDate(String expireDate) {
+        this.expireDate = LocalDate.parse(expireDate);
     }
 
     public Status getStatus() {

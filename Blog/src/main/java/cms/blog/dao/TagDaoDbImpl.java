@@ -3,6 +3,7 @@ package cms.blog.dao;
 import cms.blog.dto.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,12 @@ public class TagDaoDbImpl implements TagDao {
     @Override
     public Tag getTagByName(String name) {
         final String GET_SQL = "SELECT * FROM tag WHERE name= ?;";
-        return jdbcTemplate.queryForObject(GET_SQL, new TagMapper(), name);
+        try {
+            return jdbcTemplate.queryForObject(GET_SQL, new TagMapper(), name);
+        } catch (DataAccessException ex) {
+            return null;
+        }
+
     }
 
     @Override

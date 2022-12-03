@@ -5,13 +5,14 @@ import cms.blog.dao.TagDao;
 import cms.blog.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
+@Component
 @Profile("prod")
 public class ServiceLayer {
 
