@@ -42,6 +42,7 @@ public class ServiceLayer {
 
     public boolean editPost(Post post, Permission permission) throws AuthorizationException {
         setPostDate(post);
+        post.setEditTime(LocalDateTime.now());
         switch(permission) {
             case ADMIN:
                 return postDao.editPost(post);
@@ -116,6 +117,17 @@ public class ServiceLayer {
         }
     }
 
+    public List<Post> getPostsByContent(String content, Permission permission) {
+        switch (permission) {
+            case ADMIN:
+            case MANAGER:
+                return postDao.getPostsByContentForAdmin(content);
+            case USER:
+            default:
+                return postDao.getPostsByContentForUser(content);
+        }
+    }
+
     public List<Post> getNotApprovedPosts(Permission permission) throws AuthorizationException {
         switch (permission) {
             case ADMIN:
@@ -171,8 +183,12 @@ public class ServiceLayer {
     }
 
     private void setPostDate(Post post) {
-        if (post.getDisplayDate() != null && post.getDisplayDate().isAfter(LocalDate.now())) {
-            post.setCreationTime(post.getDisplayDate().atStartOfDay());
+        //post.setCreationTime(LocalDateTime.now());
+        //if (post.getPublishDate() == null) {
+        //    post.setPublishDate(post.getCreationTime().toLocalDate());
+        //}
+        if (post.getPublishDate() != null && post.getPublishDate().isAfter(LocalDate.now())) {
+            post.setCreationTime(post.getPublishDate().atStartOfDay());
         }
         else {
             post.setCreationTime(LocalDateTime.now());

@@ -19,30 +19,48 @@ public class TagDaoDbImpl implements TagDao {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    /**
+     * Get Tag object with given name
+     * @param name String of name to search
+     * @return Tag
+     */
     @Override
     public Tag getTagByName(String name) {
-        final String GET_SQL = "SELECT * FROM tag WHERE name LIKE ?;";
+        final String GET_SQL = "SELECT * FROM tag WHERE name = ?;";
         try {
             return jdbcTemplate.queryForObject(GET_SQL, new TagMapper(), name);
         } catch (DataAccessException ex) {
             return null;
         }
-
     }
 
+    /**
+     * Save relationship between given tag and post with given id
+     * @param tag Tag object related to Post with given id
+     * @param postId int - id of the post to which tag should be added
+     */
     @Override
     public void addTagForPost(Tag tag, int postId) {
-
         final String ADD_TAG_CONN = "INSERT INTO postTag (postId, tagId) VALUES (?,?);";
         jdbcTemplate.update(ADD_TAG_CONN, postId, tag.getId());
     }
 
+    /**
+     * Delete relationship between tag with given id and post with given id
+     * @param tagId id of the tag to be removed from the post
+     * @param postId id of the post from which tag should be removed
+     */
     @Override
     public void deleteTagForPost(int tagId, int postId) {
         final String DELETE_TAG_CONN ="DELETE FROM postTag WHERE postId = ? AND tagId = ?;";
         jdbcTemplate.update(DELETE_TAG_CONN, postId, tagId);
     }
 
+    /**
+     * Create new Tag
+     * @param tag tag that should be created, must have name
+     * @return created tag with set id
+     */
     @Transactional
     @Override
     public Tag addTag(Tag tag) {

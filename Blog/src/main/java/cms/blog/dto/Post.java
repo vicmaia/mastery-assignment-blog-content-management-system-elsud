@@ -8,10 +8,11 @@ public class Post {
 
     private int id;
     private LocalDateTime creationTime;
+    private LocalDateTime editTime;
     private String title;
     private String description;
     private String text;
-    private LocalDate displayDate;
+    private LocalDate publishDate;
     private LocalDate expireDate;
 
     private Status status;
@@ -34,6 +35,13 @@ public class Post {
         this.creationTime = creationTime;
     }
 
+    public LocalDateTime getEditTime() {
+        return editTime;
+    }
+
+    public void setEditTime(LocalDateTime editTime) {
+        this.editTime = editTime;
+    }
 
     public String getTitle() {
         return title;
@@ -59,16 +67,16 @@ public class Post {
         this.text = text;
     }
 
-    public LocalDate getDisplayDate() {
-        return displayDate;
+    public LocalDate getPublishDate() {
+        return publishDate;
     }
 
-    public void setDisplayDate(LocalDate displayDate) {
-        this.displayDate = displayDate;
+    public void setPublishDate(LocalDate publishDate) {
+        this.publishDate = publishDate;
     }
 
-     public void setDisplayDate(String displayDate) {
-        this.displayDate = LocalDate.parse(displayDate);
+     public void setPublishDate(String publishDate) {
+        this.publishDate = LocalDate.parse(publishDate);
     }
 
     public LocalDate getExpireDate() {

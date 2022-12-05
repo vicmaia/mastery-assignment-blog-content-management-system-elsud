@@ -24,6 +24,10 @@ public interface PostDao {
 
     public List<Post> getPostsByTagForUser(int tagId);
 
+    public List<Post> getPostsByContentForAdmin(String content);
+
+    public List<Post> getPostsByContentForUser(String content);
+
     public List<Post> getApprovedPostsForUser();
 
     public List<Post> getNotApprovedPosts();
