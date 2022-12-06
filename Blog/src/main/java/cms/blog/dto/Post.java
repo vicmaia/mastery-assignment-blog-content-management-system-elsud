@@ -3,28 +3,27 @@ package cms.blog.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class Post {
 
-    private int id;
+    private int postId;
     private LocalDateTime creationTime;
     private LocalDateTime editTime;
     private String title;
     private String description;
-    private String text;
+    private String postContent;
     private LocalDate publishDate;
     private LocalDate expireDate;
-
     private Status status;
-
-    private List<Tag>  tags;
+    private List<Hashtag>  hashtags;
 
     public int getId() {
-        return id;
+        return postId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.postId = id;
     }
 
     public LocalDateTime getCreationTime() {
@@ -59,12 +58,12 @@ public class Post {
         this.description = description;
     }
 
-    public String getText() {
-        return text;
+    public String getPostContent() {
+        return postContent;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setPostContent(String content) {
+        this.postContent = content;
     }
 
     public LocalDate getPublishDate() {
@@ -99,11 +98,24 @@ public class Post {
         this.status = status;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public List<Hashtag> getHashtags() {
+        return hashtags;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setTags(List<Hashtag> hashtags) {
+        this.hashtags = hashtags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Post)) return false;
+        Post post = (Post) o;
+        return getTitle().equals(post.getTitle()) && getPostContent().equals(post.getPostContent()) && getStatus() == post.getStatus();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTitle(), getPostContent(), getStatus());
     }
 }
