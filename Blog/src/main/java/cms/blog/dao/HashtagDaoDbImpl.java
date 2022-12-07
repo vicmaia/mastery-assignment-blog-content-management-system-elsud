@@ -1,6 +1,6 @@
 package cms.blog.dao;
 
-import cms.blog.dto.Hashtag;
+import cms.blog.dto.HashTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
@@ -25,8 +25,8 @@ public class HashtagDaoDbImpl implements HashtagDao {
      * @return Tag
      */
     @Override
-    public Hashtag getTagByName(String name) {
-        final String GET_SQL = "SELECT * FROM hashtag WHERE hashTagName = ?;";
+    public HashTag getTagByName(String name) {
+        final String GET_SQL = "SELECT * FROM hashTag WHERE hashTagName = ?;";
         try {
             return jdbcTemplate.queryForObject(GET_SQL, new TagMapper(), name);
         } catch (DataAccessException ex) {
@@ -40,10 +40,10 @@ public class HashtagDaoDbImpl implements HashtagDao {
      * @param postId int - id of the post to which tag should be added
      */
     @Override
-    public void addTagForPost(Hashtag tag, int postId) {
+    public void addTagForPost(HashTag tag, int postId) {
         try {
-            final String ADD_TAG_CONN = "INSERT INTO posttag (postId, hashTagId) VALUES (?,?);";
-            jdbcTemplate.update(ADD_TAG_CONN, postId, tag.getId());
+            final String ADD_TAG_CONN = "INSERT INTO postTag (postId, hashTagId) VALUES (?,?);";
+            jdbcTemplate.update(ADD_TAG_CONN, postId, tag.getHashTagId());
         } catch (DataAccessException ex) {
         }
     }
@@ -55,7 +55,7 @@ public class HashtagDaoDbImpl implements HashtagDao {
      */
     @Override
     public void deleteTagForPost(int tagId, int postId) {
-        final String DELETE_TAG_CONN ="DELETE FROM posttag WHERE postId = ? AND hashTagId = ?;";
+        final String DELETE_TAG_CONN ="DELETE FROM postTag WHERE postId = ? AND hashTagId = ?;";
         jdbcTemplate.update(DELETE_TAG_CONN, postId, tagId);
     }
 
@@ -66,20 +66,20 @@ public class HashtagDaoDbImpl implements HashtagDao {
      */
     @Transactional
     @Override
-    public Hashtag addTag(Hashtag tag) {
-        final String INSERT_SQL = "INSERT INTO hashtag (hashTagName) VALUES (?);";
-        jdbcTemplate.update(INSERT_SQL, tag.getName());
+    public HashTag addTag(HashTag tag) {
+        final String INSERT_SQL = "INSERT INTO hashTag (hashTagName) VALUES (?);";
+        jdbcTemplate.update(INSERT_SQL, tag.getHashTagName());
         int tagId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
-        tag.setId(tagId);
+        tag.setHashTagId(tagId);
         return tag;
     }
 
-    public static final class TagMapper implements RowMapper<Hashtag> {
+    public static final class TagMapper implements RowMapper<HashTag> {
         @Override
-        public Hashtag mapRow(ResultSet resultSet, int i) throws SQLException {
-            Hashtag tag = new Hashtag();
-            tag.setId(resultSet.getInt("hashTagId"));
-            tag.setName(resultSet.getString("hashTagName"));
+        public HashTag mapRow(ResultSet resultSet, int i) throws SQLException {
+            HashTag tag = new HashTag();
+            tag.setHashTagId(resultSet.getInt("hashTagId"));
+            tag.setHashTagName(resultSet.getString("hashTagName"));
             return tag;
         }
     }

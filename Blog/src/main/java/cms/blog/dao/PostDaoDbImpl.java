@@ -3,7 +3,7 @@ package cms.blog.dao;
 import cms.blog.dto.Post;
 import cms.blog.dto.RejectedPost;
 import cms.blog.dto.Status;
-import cms.blog.dto.Hashtag;
+import cms.blog.dto.HashTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
@@ -55,7 +55,7 @@ public class PostDaoDbImpl implements PostDao {
                 ADD_POST, creationTime, post.getTitle(), post.getDescription(),
                 post.getPostContent(), publishDate, expireDate, statusId);
         int postId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
-        post.setId(postId);
+        post.setPostId(postId);
         return post;
     }
 
@@ -86,7 +86,7 @@ public class PostDaoDbImpl implements PostDao {
         }
         boolean updated = jdbcTemplate.update(
                 UPDATE_POST, creationTime, post.getTitle(), post.getDescription(),
-                post.getPostContent(), publishDate, expireDate, editTime, post.getId()) > 0;
+                post.getPostContent(), publishDate, expireDate, editTime, post.getPostId()) > 0;
         return updated;
     }
 
@@ -99,8 +99,8 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     @Transactional
     public boolean deletePost(int id ) {
-        final String DELETE_TAG_CONN = "DELETE FROM posttag WHERE postId = ?;";
-        final String DELETE_REJECTED_POST = "DELETE FROM rejectionreason WHERE postId = ?;";
+        final String DELETE_TAG_CONN = "DELETE FROM postTag WHERE postId = ?;";
+        final String DELETE_REJECTED_POST = "DELETE FROM rejectionReason WHERE postId = ?;";
         final String DELETE_POST = "DELETE FROM post WHERE postId = ?;";
         jdbcTemplate.update(DELETE_TAG_CONN, id);
         jdbcTemplate.update(DELETE_REJECTED_POST, id);
@@ -133,7 +133,7 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     public RejectedPost getRejectedPostById(int id) {
         final String GET_SQL = "SELECT * FROM post INNER JOIN status ON post.statusId = status.statusId "
-                + "INNER JOIN rejectionreason ON rejectionreason.postId = post.postId WHERE post.postId = ?;";
+                + "INNER JOIN rejectionReason ON rejectionReason.postId = post.postId WHERE post.postId = ?;";
         try {
             RejectedPost post =  jdbcTemplate.queryForObject(GET_SQL, new RejectedPostMapper(), id);
             post.setTags(getTags(id));
@@ -153,7 +153,7 @@ public class PostDaoDbImpl implements PostDao {
                 + "WHERE status.statusName = ? ORDER BY post.creationTime DESC;";
         List<Post> posts =  jdbcTemplate.query(GET_SQL, new PostMapper(), Status.APPROVED.toString());
         posts.stream()
-                .forEach(post ->post.setTags(getTags(post.getId())));
+                .forEach(post ->post.setTags(getTags(post.getPostId())));
         return posts;
     }
 
@@ -173,7 +173,7 @@ public class PostDaoDbImpl implements PostDao {
                 Timestamp.valueOf(LocalDate.now().atStartOfDay()),
                 Timestamp.valueOf(LocalDate.now().atStartOfDay()));
         posts.stream()
-                .forEach(post ->post.setTags(getTags(post.getId())));
+                .forEach(post ->post.setTags(getTags(post.getPostId())));
         return posts;
     }
 
@@ -184,11 +184,11 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     public List<Post> getPostsByTagForAdmin(int tagId) {
         final String GET_SQL = "SELECT * FROM post INNER JOIN status ON post.statusId = status.statusId "
-                + "INNER JOIN posttag ON post.postId = posttag.postId WHERE posttag.hashTagId = ? "
+                + "INNER JOIN postTag ON post.postId = postTag.postId WHERE postTag.hashTagId = ? "
                 + "ORDER BY post.creationTime DESC;";
         List<Post> posts =  jdbcTemplate.query(GET_SQL, new PostMapper(), tagId);
         posts.stream()
-                .forEach(post ->post.setTags(getTags(post.getId())));
+                .forEach(post ->post.setTags(getTags(post.getPostId())));
         return posts;
     }
 
@@ -200,14 +200,14 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     public List<Post> getPostsByTagForUser(int tagId) {
         final String GET_SQL = "SELECT * FROM post INNER JOIN status ON post.statusId = status.statusId "
-                + "INNER JOIN posttag ON post.postId = posttag.postId WHERE posttag.hashTagId = ? and status.statusName = ? "
+                + "INNER JOIN postTag ON post.postId = postTag.postId WHERE postTag.hashTagId = ? and status.statusName = ? "
                 + "AND (post.publishDate IS NULL OR post.publishDate <= ?) AND (post.expireDate IS NULL OR post.expireDate >= ?) "
                 + "ORDER BY post.creationTime DESC;";
         List<Post> posts =  jdbcTemplate.query(
                 GET_SQL, new PostMapper(), tagId, Status.APPROVED.toString(),
                 Timestamp.valueOf(LocalDateTime.now()), Timestamp.valueOf(LocalDateTime.now()));
         posts.stream()
-                .forEach(post ->post.setTags(getTags(post.getId())));
+                .forEach(post ->post.setTags(getTags(post.getPostId())));
         return posts;
     }
 
@@ -223,7 +223,7 @@ public class PostDaoDbImpl implements PostDao {
         List<Post> posts =  jdbcTemplate.query(
                 GET_SQL, new PostMapper(), "%" + content + "%", "%" + content + "%");
         posts.stream()
-                .forEach(post ->post.setTags(getTags(post.getId())));
+                .forEach(post ->post.setTags(getTags(post.getPostId())));
         return posts;
     }
 
@@ -242,7 +242,7 @@ public class PostDaoDbImpl implements PostDao {
                 GET_SQL, new PostMapper(), "%" + content + "%", "%" + content + "%", Status.APPROVED.toString(),
                 Timestamp.valueOf(LocalDateTime.now()), Timestamp.valueOf(LocalDateTime.now()));
         posts.stream()
-                .forEach(post ->post.setTags(getTags(post.getId())));
+                .forEach(post ->post.setTags(getTags(post.getPostId())));
         return posts;
     }
 
@@ -257,7 +257,7 @@ public class PostDaoDbImpl implements PostDao {
                 + "WHERE status.statusName = ? ORDER BY post.creationTime DESC;";
         List<Post> posts =  jdbcTemplate.query(GET_SQL, new PostMapper(), Status.IN_WORK.toString());
         posts.stream()
-                .forEach(post ->post.setTags(getTags(post.getId())));
+                .forEach(post ->post.setTags(getTags(post.getPostId())));
         return posts;
     }
 
@@ -267,11 +267,11 @@ public class PostDaoDbImpl implements PostDao {
      */
     @Override
     public List<RejectedPost> getRejectedPosts() {
-        final String GET_SQL = "SELECT * FROM post INNER JOIN rejectionreason ON rejectionreason.postId = post.postId "
+        final String GET_SQL = "SELECT * FROM post INNER JOIN rejectionReason ON rejectionReason.postId = post.postId "
                 + "ORDER BY post.creationTime DESC;";
         List<RejectedPost> posts =  jdbcTemplate.query(GET_SQL, new RejectedPostMapper());
         posts.stream()
-                .forEach(post ->post.setTags(getTags(post.getId())));
+                .forEach(post ->post.setTags(getTags(post.getPostId())));
         return posts;
     }
 
@@ -302,7 +302,7 @@ public class PostDaoDbImpl implements PostDao {
     public void rejectPost(int postId, String reason) {
         final String GET_STATUS_ID = "SELECT statusId FROM status WHERE statusName = ?;";
         final String REJECT_SQL = "UPDATE post SET statusId=? WHERE postId = ?;";
-        final String ADD_REASON = "INSERT INTO rejectionreason (postId, rejectionReason) VALUES (?,?);";
+        final String ADD_REASON = "INSERT INTO rejectionReason (postId, rejectionReason) VALUES (?,?);";
         int statusId = jdbcTemplate.queryForObject(
                 GET_STATUS_ID, Integer.class, Status.REJECTED.toString());
         try {
@@ -326,7 +326,7 @@ public class PostDaoDbImpl implements PostDao {
         final String UPDATE_STATUS_SQL = "UPDATE post SET statusId=? WHERE postId = ?;";
         jdbcTemplate.update(UPDATE_STATUS_SQL, statusId, postId);
 
-        final String DELETE_REJECTED = "DELETE FROM rejectionreason WHERE postId = ?;";
+        final String DELETE_REJECTED = "DELETE FROM rejectionReason WHERE postId = ?;";
         jdbcTemplate.update(DELETE_REJECTED, postId);
     }
 
@@ -335,9 +335,9 @@ public class PostDaoDbImpl implements PostDao {
      * @param postId int - id of the post
      * @return List of related Tags
      */
-    private List<Hashtag> getTags(int postId) {
-        final String GET_SQL = "SELECT hashtag.* FROM hashtag INNER JOIN posttag "
-                + "ON posttag.hashTagId = hashtag.hashTagId WHERE posttag.postId = ?;";
+    private List<HashTag> getTags(int postId) {
+        final String GET_SQL = "SELECT hashTag.* FROM hashTag INNER JOIN postTag "
+                + "ON postTag.hashTagId = hashTag.hashTagId WHERE postTag.postId = ?;";
         return jdbcTemplate.query(GET_SQL, new HashtagDaoDbImpl.TagMapper(), postId);
     }
 
@@ -346,7 +346,7 @@ public class PostDaoDbImpl implements PostDao {
         public Post mapRow(ResultSet resultSet, int i) throws SQLException {
             Post post  = new Post();
             post.setTitle(resultSet.getString("post.title"));
-            post.setId(resultSet.getInt("post.postId"));
+            post.setPostId(resultSet.getInt("post.postId"));
             post.setDescription(resultSet.getString("post.descriptionField"));
             post.setPostContent(resultSet.getString("post.postContent"));
             String statusName = resultSet.getString("status.statusName");
@@ -376,7 +376,7 @@ public class PostDaoDbImpl implements PostDao {
         public RejectedPost mapRow(ResultSet resultSet, int i) throws SQLException {
             RejectedPost post  = new RejectedPost();
             post.setTitle(resultSet.getString("post.title"));
-            post.setId(resultSet.getInt("post.postId"));
+            post.setPostId(resultSet.getInt("post.postId"));
             post.setDescription(resultSet.getString("post.descriptionField"));
             post.setPostContent(resultSet.getString("post.postContent"));
             post.setStatus(Status.REJECTED);
@@ -396,7 +396,7 @@ public class PostDaoDbImpl implements PostDao {
             if (editTime != null) {
                 post.setEditTime(editTime.toLocalDateTime());
             }
-            post.setReason(resultSet.getString("rejectionreason.rejectionReason"));
+            post.setReason(resultSet.getString("rejectionReason.rejectionReason"));
             return post;
         }
     }

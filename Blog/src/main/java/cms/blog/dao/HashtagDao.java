@@ -1,14 +1,14 @@
 package cms.blog.dao;
 
-import cms.blog.dto.Hashtag;
+import cms.blog.dto.HashTag;
 
 public interface HashtagDao {
 
-    public Hashtag addTag(Hashtag tag);
+    public HashTag addTag(HashTag tag);
 
-    public Hashtag getTagByName(String name);
+    public HashTag getTagByName(String name);
 
-    public void addTagForPost(Hashtag tag, int postId);
+    public void addTagForPost(HashTag tag, int postId);
 
     public void deleteTagForPost(int tagId, int postId);
 }

@@ -16,13 +16,13 @@ public class Post {
     private LocalDate publishDate;
     private LocalDate expireDate;
     private Status status;
-    private List<Hashtag>  hashtags;
+    private List<HashTag>  hashtags;
 
-    public int getId() {
+    public int getPostId() {
         return postId;
     }
 
-    public void setId(int id) {
+    public void setPostId(int id) {
         this.postId = id;
     }
 
@@ -98,11 +98,11 @@ public class Post {
         this.status = status;
     }
 
-    public List<Hashtag> getHashtags() {
+    public List<HashTag> getHashtags() {
         return hashtags;
     }
 
-    public void setTags(List<Hashtag> hashtags) {
+    public void setTags(List<HashTag> hashtags) {
         this.hashtags = hashtags;
     }
 

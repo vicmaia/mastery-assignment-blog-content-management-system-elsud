@@ -1,6 +1,6 @@
 package cms.blog.dao;
 
-import cms.blog.dto.Hashtag;
+import cms.blog.dto.HashTag;
 import cms.blog.dto.Post;
 import cms.blog.dto.RejectedPost;
 import cms.blog.dto.Status;
@@ -33,13 +33,13 @@ public class PostDaoDbImplTest {
 
     @Before
     public void setUp() {
-        final String DELETE_REJECTIONREASON = "DELETE FROM rejectionreason;";
-        final String DELETE_POSTTAG= "DELETE FROM posttag;";
+        final String DELETE_REJECTION_REASON = "DELETE FROM rejectionReason;";
+        final String DELETE_POST_TAG= "DELETE FROM postTag;";
         final String DELETE_POST = "DELETE FROM post;";
-        final String DELETE_HASHTAG = "DELETE FROM hashtag;";
+        final String DELETE_HASHTAG = "DELETE FROM hashTag;";
 
-        jdbcTemplate.update(DELETE_REJECTIONREASON);
-        jdbcTemplate.update(DELETE_POSTTAG);
+        jdbcTemplate.update(DELETE_REJECTION_REASON);
+        jdbcTemplate.update(DELETE_POST_TAG);
         jdbcTemplate.update(DELETE_POST);
         jdbcTemplate.update(DELETE_HASHTAG);
     }
@@ -49,7 +49,7 @@ public class PostDaoDbImplTest {
     public void addAndGetPost() {
         Post post = createPost();
         Post addedPost = postDao.addPost(post);
-        Post receivedPost = postDao.getPostById(addedPost.getId());
+        Post receivedPost = postDao.getPostById(addedPost.getPostId());
         assertEquals(post.getTitle(), addedPost.getTitle());
         assertEquals(post.getTitle(), receivedPost.getTitle());
         assertEquals(post.getPostContent(), addedPost.getPostContent());
@@ -61,21 +61,21 @@ public class PostDaoDbImplTest {
     @Test
     public void editPost() {
         Post post = postDao.addPost(createPost());
-        Post receivedPost = postDao.getPostById(post.getId());
+        Post receivedPost = postDao.getPostById(post.getPostId());
         assertEquals(post.getTitle(), receivedPost.getTitle());
         assertEquals(post.getStatus(), receivedPost.getStatus());
         assertEquals(post.getPostContent(), receivedPost.getPostContent());
         post.setExpireDate(LocalDate.parse("2022-12-12"));
         post.setTitle("new");
         assertTrue(postDao.editPost(post));
-        Post editedPost = postDao.getPostById(post.getId());
+        Post editedPost = postDao.getPostById(post.getPostId());
         assertEquals(post.getTitle(), editedPost.getTitle());
         assertEquals(post.getPostContent(), editedPost.getPostContent());
         assertEquals(post.getStatus(), editedPost.getStatus());
         assertEquals(post.getExpireDate(), editedPost.getExpireDate());
         assertNotEquals(receivedPost.getTitle(), editedPost.getTitle());
         assertNotEquals(receivedPost.getExpireDate(), editedPost.getExpireDate());
-        assertEquals(receivedPost.getId(), editedPost.getId());
+        assertEquals(receivedPost.getPostId(), editedPost.getPostId());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class PostDaoDbImplTest {
     @Test
     public void deleteExistingPost() {
         Post post = postDao.addPost(createPost());
-        int postId = post.getId();
+        int postId = post.getPostId();
         assertNotNull(postDao.getPostById(postId));
         assertTrue(postDao.deletePost(postId));
         assertNull(postDao.getPostById(postId));
@@ -96,15 +96,15 @@ public class PostDaoDbImplTest {
     public void deletePostWithTags() {
         Post post = createPost();
         post = postDao.addPost(post);
-        Hashtag tag = hashtagDao.addTag(new Hashtag("tag"));
-        hashtagDao.addTagForPost(tag, post.getId());
-        post = postDao.getPostById(post.getId());
+        HashTag tag = hashtagDao.addTag(new HashTag("tag"));
+        hashtagDao.addTagForPost(tag, post.getPostId());
+        post = postDao.getPostById(post.getPostId());
         assertNotNull(post);
         assertEquals(1, post.getHashtags().size());
         assertTrue(post.getHashtags().contains(tag));
-        assertTrue(postDao.deletePost(post.getId()));
-        assertNull(postDao.getPostById(post.getId()));
-        assertNotNull(hashtagDao.getTagByName(tag.getName()));
+        assertTrue(postDao.deletePost(post.getPostId()));
+        assertNull(postDao.getPostById(post.getPostId()));
+        assertNotNull(hashtagDao.getTagByName(tag.getHashTagName()));
     }
 
     @Test
@@ -112,17 +112,17 @@ public class PostDaoDbImplTest {
         Post post = createPost();
         post.setStatus(Status.IN_WORK);
         post = postDao.addPost(post);
-        postDao.rejectPost(post.getId(), "reason");
-        post = postDao.getPostById(post.getId());
+        postDao.rejectPost(post.getPostId(), "reason");
+        post = postDao.getPostById(post.getPostId());
         assertEquals(Status.REJECTED, post.getStatus());
         List<RejectedPost> rejectedPosts = postDao.getRejectedPosts();
         assertEquals(1, rejectedPosts.size());
-        RejectedPost rejected = postDao.getRejectedPostById(post.getId());
+        RejectedPost rejected = postDao.getRejectedPostById(post.getPostId());
         assertTrue(rejectedPosts.contains(rejected));
         assertEquals("reason", rejected.getReason());
-        postDao.deletePost(post.getId());
-        assertNull(postDao.getPostById(post.getId()));
-        assertNull(postDao.getRejectedPostById(post.getId()));
+        postDao.deletePost(post.getPostId());
+        assertNull(postDao.getPostById(post.getPostId()));
+        assertNull(postDao.getRejectedPostById(post.getPostId()));
         assertTrue(postDao.getRejectedPosts().isEmpty());
     }
 
@@ -170,16 +170,16 @@ public class PostDaoDbImplTest {
         post2.setStatus(Status.REJECTED);
         post1 = postDao.addPost(post1);
         post2 = postDao.addPost(post2);
-        Hashtag tag1 = hashtagDao.addTag(new Hashtag("tag"));
-        Hashtag tag2 = hashtagDao.addTag(new Hashtag("another tag"));
-        hashtagDao.addTagForPost(tag1, post1.getId());
-        hashtagDao.addTagForPost(tag2, post1.getId());
-        hashtagDao.addTagForPost(tag2, post2.getId());
-        List<Post> posts = postDao.getPostsByTagForAdmin(tag1.getId());
+        HashTag tag1 = hashtagDao.addTag(new HashTag("tag"));
+        HashTag tag2 = hashtagDao.addTag(new HashTag("another tag"));
+        hashtagDao.addTagForPost(tag1, post1.getPostId());
+        hashtagDao.addTagForPost(tag2, post1.getPostId());
+        hashtagDao.addTagForPost(tag2, post2.getPostId());
+        List<Post> posts = postDao.getPostsByTagForAdmin(tag1.getHashTagId());
         assertEquals(1, posts.size());
         assertTrue(posts.contains(post1));
         assertFalse(posts.contains(post2));
-        posts = postDao.getPostsByTagForAdmin(tag2.getId());
+        posts = postDao.getPostsByTagForAdmin(tag2.getHashTagId());
         assertEquals(2, posts.size());
         assertTrue(posts.contains(post1));
         assertTrue(posts.contains(post2));
@@ -193,25 +193,25 @@ public class PostDaoDbImplTest {
         post2.setTitle("new");
         post1 = postDao.addPost(post1);
         post2 = postDao.addPost(post2);
-        Hashtag tag1 = hashtagDao.addTag(new Hashtag("tag"));
-        Hashtag tag2 = hashtagDao.addTag(new Hashtag("another tag"));
-        hashtagDao.addTagForPost(tag1, post1.getId());
-        hashtagDao.addTagForPost(tag2, post1.getId());
-        hashtagDao.addTagForPost(tag2, post2.getId());
-        List<Post> posts = postDao.getPostsByTagForUser(tag1.getId());
+        HashTag tag1 = hashtagDao.addTag(new HashTag("tag"));
+        HashTag tag2 = hashtagDao.addTag(new HashTag("another tag"));
+        hashtagDao.addTagForPost(tag1, post1.getPostId());
+        hashtagDao.addTagForPost(tag2, post1.getPostId());
+        hashtagDao.addTagForPost(tag2, post2.getPostId());
+        List<Post> posts = postDao.getPostsByTagForUser(tag1.getHashTagId());
         assertEquals(1, posts.size());
         assertTrue(posts.contains(post1));
         assertFalse(posts.contains(post2));
-        posts = postDao.getPostsByTagForUser(tag2.getId());
+        posts = postDao.getPostsByTagForUser(tag2.getHashTagId());
         assertEquals(2, posts.size());
         assertTrue(posts.contains(post1));
         assertTrue(posts.contains(post2));
-        assertTrue(postDao.getPostsByTagForUser(23).isEmpty());
+        assertTrue(postDao.getPostsByTagForUser(45).isEmpty());
         post1.setPublishDate(LocalDate.now().plusDays(2));
         post2.setExpireDate(LocalDate.now().minusDays(2));;
         postDao.editPost(post1);
         postDao.editPost(post2);
-        assertTrue(postDao.getPostsByTagForUser(tag2.getId()).isEmpty());
+        assertTrue(postDao.getPostsByTagForUser(tag2.getHashTagId()).isEmpty());
     }
 
     @Test
@@ -297,11 +297,11 @@ public class PostDaoDbImplTest {
         post2 = postDao.addPost(post2);
         List<RejectedPost> posts = postDao.getRejectedPosts();
         assertEquals(0, posts.size());
-        postDao.rejectPost(post2.getId(), "reason");
+        postDao.rejectPost(post2.getPostId(), "reason");
         posts = postDao.getRejectedPosts();
         assertEquals(1, posts.size());
         assertEquals(post2.getTitle(), posts.get(0).getTitle());
-        assertEquals(post2.getId(), posts.get(0).getId());
+        assertEquals(post2.getPostId(), posts.get(0).getPostId());
         assertEquals(post2.getPostContent(), posts.get(0).getPostContent());
     }
 
@@ -310,11 +310,11 @@ public class PostDaoDbImplTest {
         Post post = createPost();
         post.setStatus(Status.IN_WORK);
         post = postDao.addPost(post);
-        post = postDao.getPostById(post.getId());
+        post = postDao.getPostById(post.getPostId());
         assertTrue(postDao.getNotApprovedPosts().contains(post));
         assertEquals(Status.IN_WORK, post.getStatus());
-        postDao.approvePost(post.getId(), LocalDateTime.now());
-        post = postDao.getPostById(post.getId());
+        postDao.approvePost(post.getPostId(), LocalDateTime.now());
+        post = postDao.getPostById(post.getPostId());
         assertTrue(postDao.getNotApprovedPosts().isEmpty());
         assertEquals(Status.APPROVED, post.getStatus());
 
@@ -325,16 +325,16 @@ public class PostDaoDbImplTest {
         Post post = createPost();
         post.setStatus(Status.IN_WORK);
         post = postDao.addPost(post);
-        post = postDao.getPostById(post.getId());
+        post = postDao.getPostById(post.getPostId());
         assertTrue(postDao.getNotApprovedPosts().contains(post));
         assertEquals(Status.IN_WORK, post.getStatus());
-        postDao.rejectPost(post.getId(), "reason");
-        post = postDao.getPostById(post.getId());
+        postDao.rejectPost(post.getPostId(), "reason");
+        post = postDao.getPostById(post.getPostId());
         assertTrue(postDao.getNotApprovedPosts().isEmpty());
         assertEquals(Status.REJECTED, post.getStatus());
         List<RejectedPost> rejectedPosts = postDao.getRejectedPosts();
         assertEquals(1, rejectedPosts.size());
-        RejectedPost rejected = postDao.getRejectedPostById(post.getId());
+        RejectedPost rejected = postDao.getRejectedPostById(post.getPostId());
         assertTrue(rejectedPosts.contains(rejected));
         assertEquals("reason", rejected.getReason());
     }
@@ -346,14 +346,14 @@ public class PostDaoDbImplTest {
         post = postDao.addPost(post);
         assertTrue(postDao.getNotApprovedPosts().contains(post));
         assertEquals(Status.IN_WORK, post.getStatus());
-        postDao.rejectPost(post.getId(), "reason");
-        post = postDao.getPostById(post.getId());
+        postDao.rejectPost(post.getPostId(), "reason");
+        post = postDao.getPostById(post.getPostId());
         assertTrue(postDao.getNotApprovedPosts().isEmpty());
         assertEquals(Status.REJECTED, post.getStatus());
-        postDao.sendToApprove(post.getId());
-        assertNull(postDao.getRejectedPostById(post.getId()));
+        postDao.sendToApprove(post.getPostId());
+        assertNull(postDao.getRejectedPostById(post.getPostId()));
         assertFalse(postDao.getNotApprovedPosts().isEmpty());
-        post = postDao.getPostById(post.getId());
+        post = postDao.getPostById(post.getPostId());
         assertTrue(postDao.getNotApprovedPosts().contains(post));
         assertEquals(Status.IN_WORK, post.getStatus());
     }

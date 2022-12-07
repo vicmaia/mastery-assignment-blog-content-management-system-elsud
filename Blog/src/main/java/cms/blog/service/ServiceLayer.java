@@ -83,9 +83,9 @@ public class ServiceLayer {
      * @param postId id of the post to which tag should be added
      */
     public void addTagForPost(String tagName, int postId) {
-        Hashtag tag = tagDao.getTagByName(tagName);
+        HashTag tag = tagDao.getTagByName(tagName);
         if (tag == null) {
-            tag = tagDao.addTag(new Hashtag(tagName));
+            tag = tagDao.addTag(new HashTag(tagName));
         }
         tagDao.addTagForPost(tag, postId);
     }

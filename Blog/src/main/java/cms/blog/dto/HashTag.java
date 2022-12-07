@@ -2,42 +2,42 @@ package cms.blog.dto;
 
 import java.util.Objects;
 
-public class Hashtag {
+public class HashTag {
 
     private int hashTagId;
     private String hashTagName;
 
-    public Hashtag(){}
-    public Hashtag(String name) {
+    public HashTag(){}
+    public HashTag(String name) {
         this.hashTagName = name;
     }
 
-    public Hashtag(int id, String name) {
+    public HashTag(int id, String name) {
         this.hashTagId = id;
         this.hashTagName = name;
     }
 
-    public int getId() {
+    public int getHashTagId() {
         return hashTagId;
     }
 
-    public void setId(int id) {
+    public void setHashTagId(int id) {
         this.hashTagId = id;
     }
 
-    public String getName() {
+    public String getHashTagName() {
         return hashTagName;
     }
 
-    public void setName(String name) {
+    public void setHashTagName(String name) {
         this.hashTagName = name;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Hashtag)) return false;
-        Hashtag hashtag = (Hashtag) o;
+        if (!(o instanceof HashTag)) return false;
+        HashTag hashtag = (HashTag) o;
         return hashTagId == hashtag.hashTagId && hashTagName.equals(hashtag.hashTagName);
     }
 
