@@ -27,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         if (admin==null || manager==null) {
             return;
         }
+        //passwordEncoder().hashCode("1111");
         //System.out.println(passwordEncoder().encode("1111")); //$2a$10$8gFS6nYtAsDYSnd8y1eMuu/Ey720LdIIPeQ0YCdCQ0hq6JkLiSEUy
         //System.out.println(passwordEncoder().encode("2222")); //$2a$10$qldjV4W4oMxmleDWd8k/vuKyTV/1oQTOQ.46Mv4wvMZ6l.i/rfpqS
         auth
@@ -35,12 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser(manager.getEmail()).password("{noop}" + manager.getPassword()).roles("MANAGER").and()
                 //.withUser(admin.getEmail()).password(passwordEncoder().encode(admin.getPassword())).roles("ADMIN")
                 .withUser(admin.getEmail()).password("{noop}" + admin.getPassword()).roles("ADMIN");
+
+
     }
 
-    //@Bean
-    //public PasswordEncoder passwordEncoder() {
-    //    return new BCryptPasswordEncoder();
-    //}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

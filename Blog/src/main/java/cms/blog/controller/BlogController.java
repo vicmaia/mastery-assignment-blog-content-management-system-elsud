@@ -67,13 +67,15 @@ public class BlogController {
     
     
     
-    /*
+
     @GetMapping("/post/{postId}")
-    private String showPost(@PathVariable("postId") int postId,
+    public String showPost(@PathVariable("postId") int postId,
                             Model model){
+        Post post = service.getPostById(postId);
+        model.addAttribute("post", post);
         return "blog/blog_post";
     }
-*/
+
     
     
     
@@ -83,6 +85,9 @@ public class BlogController {
     @RequestMapping("/page/search")
     public String searchPosts(@RequestParam(value = "query") String query,
                               Model model){
+        Permission permission = USER;
+        List<Post> postResponse = service.getPostsByContent(query, permission);
+        model.addAttribute("postResponse", postResponse);
         return "blog/view_posts";
     }
     

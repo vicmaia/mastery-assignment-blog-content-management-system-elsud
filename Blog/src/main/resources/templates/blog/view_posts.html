@@ -9,12 +9,12 @@
 <div class="container">
     <div class="row">
         <div class="col-md-9">
-            <div th:each = "post: ${postsResponse}">
+            <div th:each = "post: ${postResponse}">
                 <div class="card">
                     <div class="card-header">
-                        <h3>
-                            <a th:href="@{/post/{postUrl}(postUrl=${post.postId})}"
-                                th:text="${post.title}"></a>
+                        <h3 th:text="${post.title}">
+                            <!--a th:href="@{/post/{postUrl}(postUrl=${post.postId})}"
+                                th:text="${post.title}"></a-->
                         </h3>
                         <div>
                             <strong th:text="${#temporals.format(post.creationTime, 'dd MMMM yyyy')}">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <span th:utext="${post.descriptionField}"> </span>
+                        <span th:utext="${post.description}"> </span>
                         <a th:href="@{/post/{postUrl}(postUrl=${post.postId})}">Read more</a>
                     </div>
                 </div>

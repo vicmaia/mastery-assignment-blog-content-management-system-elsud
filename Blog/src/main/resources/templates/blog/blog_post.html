@@ -17,16 +17,16 @@
             </div>
             <hr />
             <div>
-                <h3>Comments:</h3>
-                <div th:each = "comment: ${post.comments}">
+                <h3>HashTags:</h3>
+                <div th:each = "hashtag: ${post.hashtags}">
                     <div>
-                        <p><b>Name:</b><strong th:text="${comment.name}"></strong></p>
-                        <p><b>Date:<strong th:text="${#temporals.format(comment.createdOn, 'dd MMMM yyyy')}"></strong></b></p>
-                        <p th:text="${comment.content}"></p>
+                        <p><b>Name:</b><strong th:text="${hashtag.hashTagName}"></strong></p>
+                        <!--p><b>Date:<strong th:text="${#temporals.format(comment.createdOn, 'dd MMMM yyyy')}"></strong></b></p>
+                        <p th:text="${comment.content}"></p-->
                         <br />
                     </div>
                 </div>
-                <div class="card">
+                <!--div class="card">
                     <div class="card-header">
                         <h2>Leave a comment</h2>
                     </div>
@@ -91,7 +91,7 @@
                             </div>
                         </form>
                     </div>
-                </div>
+                </div-->
             </div>
         </div>
 
