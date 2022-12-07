@@ -2,6 +2,7 @@ package cms.blog.service;
 
 import cms.blog.dao.PostDao;
 import cms.blog.dao.HashtagDao;
+import cms.blog.dao.UserDao;
 import cms.blog.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -17,11 +18,13 @@ public class ServiceLayer {
 
     private final PostDao postDao;
     private final HashtagDao tagDao;
+    private final UserDao userDao;
 
     @Autowired
-    public ServiceLayer(PostDao postDao, HashtagDao tagDao) {
+    public ServiceLayer(PostDao postDao, HashtagDao tagDao, UserDao userDao) {
         this.postDao = postDao;
         this.tagDao = tagDao;
+        this.userDao = userDao;
     }
 
     /**
@@ -287,6 +290,14 @@ public class ServiceLayer {
             default:
                 throw new AuthorizationException("Access denied!");
         }
+    }
+
+    public User getUserByEmail(String email) {
+        return userDao.getUserByEmail(email);
+    }
+
+    public User getUserByName(String name) {
+        return userDao.getUserByName(name);
     }
 
     /**
