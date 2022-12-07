@@ -64,3 +64,5 @@ CREATE TABLE users (
 ​
 insert into status (statusName)
  Values ('APPROVED'),('IN_WORK'),('REJECTED');
+insert into users (name, email, password)
+ Values ('admin', "admin@gmail.com", "1111"),('manager','manager@gmail.com', '2222');
