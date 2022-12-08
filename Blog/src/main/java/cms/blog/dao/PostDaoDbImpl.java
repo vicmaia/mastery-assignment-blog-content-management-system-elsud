@@ -67,11 +67,12 @@ public class PostDaoDbImpl implements PostDao {
     @Override
     public boolean editPost(Post post) {
         final String UPDATE_POST = "UPDATE post SET creationTime=?, title=?, descriptionField=?, postContent=?, "
-                + "publishDate=?, expireDate=?, editTime=? WHERE postId=?";
+                + "publishDate=?, expireDate=?, editTime=?, statusId=? WHERE postId=?";
         Date publishDate = null;
         Date expireDate = null;
         Timestamp creationTime = null;
         Timestamp editTime = null;
+        int status = post.getStatus().ordinal();
         if (post.getCreationTime() != null) {
             creationTime = Timestamp.valueOf(post.getCreationTime());
         }
@@ -84,9 +85,12 @@ public class PostDaoDbImpl implements PostDao {
         if (post.getEditTime() != null) {
             editTime = Timestamp.valueOf(post.getEditTime());
         }
+        if (post.getStatus() == Status.REJECTED) {
+            sendToApprove(post.getPostId());
+        }
         boolean updated = jdbcTemplate.update(
                 UPDATE_POST, creationTime, post.getTitle(), post.getDescription(),
-                post.getPostContent(), publishDate, expireDate, editTime, post.getPostId()) > 0;
+                post.getPostContent(), publishDate, expireDate, editTime, status, post.getPostId()) > 0;
         return updated;
     }
 
