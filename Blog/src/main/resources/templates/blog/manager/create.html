@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<div th:replace="blog/manager/header :: header"></div>
+<body>
+<div th:replace="blog/manager/header :: navbar"></div>
+<br />
+
+<div class="container">
+    <h1>Create Post</h1>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text"
+                   class="form-control"
+                   id="title"
+                   name="title"
+            />
+            <p class="text-danger"
+            ></p>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Short Description</label>
+            <textarea
+                    class="form-control"
+                    id="shortDescription"
+                    placeholder="Enter post short description"
+                    rows="3"
+                    name="shortDescription"
+            >
+
+                </textarea>
+            <p class="text-danger"></p>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Content</label>
+            <textarea
+                    class="form-control"
+                    id="content"
+                    placeholder="Enter post content"
+                    rows="12"
+                    name="content"
+            >
+                </textarea>
+            <p class="text-danger"></p>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tags</label>
+            <textarea
+                    class="form-control"
+                    id="tags"
+                    placeholder="Enter tags"
+                    rows="3"
+                    name="tags"
+            >
+
+                </textarea>
+            <p class="text-danger"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Request Approval</button>
+    </form>
+</div>
+
+<div th:replace="blog/footer :: footer"></div>
+</body>
+</html>
