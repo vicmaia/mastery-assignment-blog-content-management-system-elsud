@@ -107,6 +107,22 @@ public class Post {
     }
 
     @Override
+    public String toString() {
+        return "Post{" +
+                "postId=" + postId +
+                ", creationTime=" + creationTime +
+                ", editTime=" + editTime +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", postContent='" + postContent + '\'' +
+                ", publishDate=" + publishDate +
+                ", expireDate=" + expireDate +
+                ", status=" + status +
+                ", hashtags=" + hashtags +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Post)) return false;
