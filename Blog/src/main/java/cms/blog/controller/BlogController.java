@@ -6,25 +6,28 @@ package cms.blog.controller;
 
 import cms.blog.dao.PostDao;
 import cms.blog.dao.HashtagDao;
+import cms.blog.dto.HashTag;
 import cms.blog.dto.Permission;
-import static cms.blog.dto.Permission.ADMIN;
-import static cms.blog.dto.Permission.USER;
 
 import cms.blog.dto.Post;
+import cms.blog.dto.RejectedPost;
+import cms.blog.service.AuthorizationException;
 import cms.blog.service.ServiceLayer;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.RestController;
+
+import static cms.blog.dto.Permission.*;
 
 /**
  *
@@ -64,9 +67,6 @@ public class BlogController {
         
         return "blog/view_posts";
     }
-    
-    
-    
 
     @GetMapping("/post/{postId}")
     public String showPost(@PathVariable("postId") int postId,
@@ -76,8 +76,6 @@ public class BlogController {
         return "blog/blog_post";
     }
 
-    
-    
     
     
     // handler method to handle blog post search request
@@ -96,6 +94,7 @@ public class BlogController {
     public String login(Model model){
         return "login";
     }
+
     
     /*
     @RequestMapping("/")
@@ -110,5 +109,78 @@ public class BlogController {
         return "admin/create_post";
     }
 */
+
+//    MANAGER FUNCTIONS
+@RequestMapping(value = "/manager/pending", method = RequestMethod.GET)
+public String displayPendingPost(Model model) throws AuthorizationException {
+    Permission permission = MANAGER;
+    List<Post> pending = service.getNotApprovedPosts(permission);
+    model.addAttribute("posts", pending);
+
+    return "blog/manager/pending";
+}
+
+    @RequestMapping(value = "/manager/rejected", method = RequestMethod.GET)
+    public String displayRejectedPost(Model model) throws AuthorizationException {
+        Permission permission = MANAGER;
+        List<RejectedPost> rejected = service.getRejectedPosts(permission);
+        model.addAttribute("posts", rejected);
+
+        return "blog/manager/rejected";
+    }
+
+
+    @PostMapping("/manager/create")
+    public String addPost(HttpServletRequest request) throws AuthorizationException {
+        String title = request.getParameter("title");
+        String content = request.getParameter("content");
+        String shortDescription = request.getParameter("shortDescription");
+
+        Post post = new Post();
+        post.setTitle(title);
+        post.setPostContent(content);
+        post.setDescription(shortDescription);
+        service.addPost(post, MANAGER);
+
+//        postDao.addPost(post);
+        return "redirect:/";
+    }
+
+    @GetMapping("/manager/create")
+    public String displayCreationPage(Model model) {
+        return "blog/manager/create";
+    }
+
+    @RequestMapping(value = "manager/deletePost/{postId}", method = RequestMethod.GET)
+    public String deletePost(@PathVariable Integer postId) throws AuthorizationException {
+            Post post = service.getPostById(postId);
+        service.deletePost(postId, MANAGER);
+
+        return "redirect:/";
+    }
+
+
+    @RequestMapping(value ="/manager/editPost/{postId}", method = RequestMethod.GET)
+    public String editPost(@PathVariable Integer postId, Model model) {
+        Post post = postDao.getPostById(postId);
+        model.addAttribute("post", post);
+        return "blog/manager/editPost";
+    }
+
+    @RequestMapping(value = "/manager/editPost/{postId}", method = RequestMethod.POST)
+    public String updatePost(@PathVariable Integer postId, HttpServletRequest request, Model model) throws AuthorizationException {
+        Post currentPost = service.getPostById(postId);
+
+        currentPost.setTitle(request.getParameter("title"));
+        currentPost.setDescription(request.getParameter("shortDescription"));
+        currentPost.setPostContent(request.getParameter("content"));
+
+        service.editPost(currentPost, MANAGER);
+
+        model.addAttribute("post", currentPost);
+
+        return "redirect:/";
+    }
+
 
 }
