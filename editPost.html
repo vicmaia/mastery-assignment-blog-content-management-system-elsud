@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<div th:replace="blog/manager/header :: header"></div>
+<body>
+<div th:replace="blog/manager/header :: navbar"></div>
+<br />
+
+<div class="container">
+<h1>Edit Post</h1>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label"> Title </label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        th:value="${post.title}"
+                />
+                <p class="text-danger"
+                ></p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Short Description</label>
+                <textarea
+                        class="form-control"
+                        id="shortDescription"
+                        placeholder="Enter post short description"
+                        rows="3"
+                        name="shortDescription"
+                        th:text="${post.description}"
+
+                >
+
+                </textarea>
+                <p class="text-danger"></p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Content</label>
+                <textarea
+                        class="form-control"
+                        id="content"
+                        placeholder="Enter post content"
+                        rows="12"
+                        name="content"
+                        th:text="${post.postContent}"
+
+                >
+                </textarea>
+                <p class="text-danger"></p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tags</label>
+                <textarea
+                        class="form-control"
+                        id="tags"
+                        placeholder="Enter tags"
+                        rows="3"
+                        name="tags"
+                >
+
+                </textarea>
+                <p class="text-danger"></p>
+            </div>
+            <input type="hidden" name="id" th:value="${post.postId}" />
+            <button type="submit" class="btn btn-primary">Request Approval</button>
+        </form>
+
+    </div>
+</div>
+
+<div th:replace="blog/footer :: footer"></div>
+</body>
+</html>
