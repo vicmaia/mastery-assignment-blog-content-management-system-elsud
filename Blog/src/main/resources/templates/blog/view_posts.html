@@ -25,6 +25,11 @@
                     <div class="card-body">
                         <span th:utext="${post.description}"> </span>
                         <a th:href="@{/post/{postUrl}(postUrl=${post.postId})}">Read more</a>
+                        <h4 th:text="${post.hashtags}"></h4>
+                        <!--a th:href="@{/page/search?query={hashtag}(hashtag=${post.hashtagName})}"></a-->
+                        
+                        
+                    </div>
                     </div>
                 </div>
                 <br />
@@ -34,6 +39,8 @@
         <!-- search bar           -->
             <div th:replace="blog/search :: search"></div>
         </div>
+
+        
     </div>
 </div>
 <div th:replace="blog/footer :: footer"></div>
