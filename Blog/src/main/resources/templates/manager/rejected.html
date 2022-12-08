@@ -2,16 +2,16 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
 >
-<div th:replace="blog/manager/header :: header"></div>
+<div th:replace="manager/header :: header"></div>
 <body>
-<div th:replace="blog/manager/header :: navbar"></div>
+<div th:replace="manager/header :: navbar"></div>
 <br /><br />
 <div class="container">
-    <h1>Pending Posts</h1>
+    <h1>Rejected Posts</h1>
     <table class="table table-striped">
         <thead>
         <tr>
-<!--            postId, creationTime, title, descriptionField, postContent, statusId, publishDate, editTime, expireDate, statusId, statusName-->
+            <!--            postId, creationTime, title, descriptionField, postContent, statusId, publishDate, editTime, expireDate, statusId, statusName-->
             <th scope="col">ID</th>
             <th scope="col">Creation Time</th>
             <th scope="col">Title</th>

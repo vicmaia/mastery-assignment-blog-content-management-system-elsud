@@ -117,7 +117,7 @@ public String displayPendingPost(Model model) throws AuthorizationException {
     List<Post> pending = service.getNotApprovedPosts(permission);
     model.addAttribute("posts", pending);
 
-    return "blog/manager/pending";
+    return "manager/pending";
 }
 
     @RequestMapping(value = "/manager/rejected", method = RequestMethod.GET)
@@ -126,7 +126,7 @@ public String displayPendingPost(Model model) throws AuthorizationException {
         List<RejectedPost> rejected = service.getRejectedPosts(permission);
         model.addAttribute("posts", rejected);
 
-        return "blog/manager/rejected";
+        return "manager/rejected";
     }
 
 
@@ -148,7 +148,7 @@ public String displayPendingPost(Model model) throws AuthorizationException {
 
     @GetMapping("/manager/create")
     public String displayCreationPage(Model model) {
-        return "blog/manager/create";
+        return "manager/create";
     }
 
     @RequestMapping(value = "manager/deletePost/{postId}", method = RequestMethod.GET)
@@ -164,7 +164,7 @@ public String displayPendingPost(Model model) throws AuthorizationException {
     public String editPost(@PathVariable Integer postId, Model model) {
         Post post = postDao.getPostById(postId);
         model.addAttribute("post", post);
-        return "blog/manager/editPost";
+        return "manager/editPost";
     }
 
     @RequestMapping(value = "/manager/editPost/{postId}", method = RequestMethod.POST)

@@ -1,0 +1,178 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <title>Admin Edit Dashboard</title>
+  </head>
+  <body>
+    <!--Navbar-->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">CMS Blog App</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/admin/pending}">Pending Posts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/admin/}">Approved Posts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/admin/create}">Create</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/logout}">Sign Out</a>
+            <!--button class="btn btn-primary" type="submit">Sign Out</button-->
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!--Title-->
+    <div class="container">
+      <div class="col text-center m-4">
+        <h1>Editor</h1>
+      </div>
+
+      <form action="adminEdit" method="POST">
+        <div class="mb-3">
+          <label class="form-label"> Title </label>
+          <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  name="title"
+                  th:value="${post.title}"
+          />
+          <p class="text-danger"
+          ></p>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Short Description</label>
+          <textarea
+                  class="form-control"
+                  id="shortDescription"
+                  placeholder="Enter post short description"
+                  rows="3"
+                  name="shortDescription"
+                  th:text="${post.description}"
+
+          >
+
+                </textarea>
+          <p class="text-danger"></p>
+        </div>
+
+        <div class="form-group row col-10">
+          <label for="expireDate" class="col-sm-2 col-form-label">Expire Date:</label>
+          <div class="col-sm-10">
+            <input
+                    type="date"
+                    class="form-control"
+                    id="expireDate"
+                    th:value="${post.expireDate}"
+            />
+          </div>
+        </div>
+
+        <div class="form-group row col-10">
+          <label for="publishDate" class="col-sm-2 col-form-label">Publish Date:</label>
+          <div class="col-sm-10">
+            <input
+              type="date"
+              class="form-control"
+              id="publishDate"
+              th:value="${post.publishDate}"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Content</label>
+          <textarea
+                  class="form-control"
+                  id="content"
+                  placeholder="Enter post content"
+                  rows="12"
+                  name="content"
+                  th:text="${post.postContent}"
+
+          >
+                </textarea>
+          <p class="text-danger"></p>
+        </div>
+
+        <input type="hidden" name="postId" th:value="${post.postId}" />
+        <button type="submit" class="btn btn-primary">Update</button>
+        <button th:if="${post.status.name() == 'IN_WORK'}" type="submit"
+                        id="approvePost"
+                        formaction="/admin/approve/">
+                    Approve
+                </button>
+
+
+      </form>
+      <form th:if="${post.status.name() == 'IN_WORK'}" action="reject" method="POST">
+        <div class="form-group row col-10">
+          <label for="reason" class="col-sm-2 col-form-label">Rejection reason:</label>
+          <div class="col-sm-10">
+            <input
+                    type="text"
+                    class="form-control"
+                    id="reason"
+            />
+          </div>
+        </div>
+        <input type="hidden" name="postId" th:value="${post.postId}" />
+        <button type="submit" class="btn btn-primary">Reject</button>
+      </form>
+    <!--Footer-->
+    <footer
+      class="footer-copyright text-center bg-dark py-3"
+      style="position: fixed; width: 100%; bottom: 0; color: white"
+    >
+      <div>
+        <strong> Aspire Women in Tech - Wiley Edge </strong>
+      </div>
+    </footer>
+
+    <!--Script tags-->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
