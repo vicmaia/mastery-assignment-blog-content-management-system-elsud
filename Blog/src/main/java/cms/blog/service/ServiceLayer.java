@@ -314,4 +314,12 @@ public class ServiceLayer {
             post.setCreationTime(LocalDateTime.now());
         }
     }
+    
+        public LocalDate parseDateInput(String date) {
+        if(date.equals("") || date == null) {
+            return LocalDate.now();
+        } else {
+            return LocalDate.parse(date);
+        }
+    }
 }
