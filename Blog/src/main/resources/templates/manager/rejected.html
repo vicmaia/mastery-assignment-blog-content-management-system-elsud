@@ -33,7 +33,7 @@
             <td th:text="${post.status}" ></td>
             <td>
                 <button type="button" class="btn btn-primary">
-                    <a href="/" style="color: white; text-decoration: none;" th:href="@{/manager/editPost/{postUrl}(postUrl=${post.postId})}">Edit</a>
+                    <a href="/" style="color: white; text-decoration: none;" th:href="@{/manager/editPost/rejected/{postUrl}(postUrl=${post.postId})}">Edit</a>
                 </button>
             </td>
               
