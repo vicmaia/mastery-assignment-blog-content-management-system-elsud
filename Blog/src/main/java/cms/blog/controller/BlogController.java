@@ -154,15 +154,18 @@ public String displayPendingPost(Model model) throws AuthorizationException {
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String shortDescription = request.getParameter("shortDescription");
+        String expDate = request.getParameter("expireDate");
+        String pubDate = request.getParameter("publishDate");
 
         Post post = new Post();
         post.setTitle(title);
         post.setPostContent(content);
         post.setDescription(shortDescription);
+        post.setPublishDate(service.parseDateInput(pubDate));
+        post.setExpireDate(service.parseDateInput(expDate));
         service.addPost(post, MANAGER);
 
-//        postDao.addPost(post);
-        return "redirect:/";
+        return "redirect:/manager/pending";
     }
 
     @GetMapping("/manager/create")
@@ -175,7 +178,7 @@ public String displayPendingPost(Model model) throws AuthorizationException {
             Post post = service.getPostById(postId);
         service.deletePost(postId, MANAGER);
 
-        return "redirect:/";
+        return "redirect:/manager/pending";
     }
 
 
@@ -193,12 +196,14 @@ public String displayPendingPost(Model model) throws AuthorizationException {
         currentPost.setTitle(request.getParameter("title"));
         currentPost.setDescription(request.getParameter("shortDescription"));
         currentPost.setPostContent(request.getParameter("content"));
+        currentPost.setPublishDate(request.getParameter("publishDate"));
+        currentPost.setExpireDate(request.getParameter("expireDate"));
 
         service.editPost(currentPost, MANAGER);
 
         model.addAttribute("post", currentPost);
 
-        return "redirect:/";
+        return "redirect:/manager/pending";
     }
 
 
