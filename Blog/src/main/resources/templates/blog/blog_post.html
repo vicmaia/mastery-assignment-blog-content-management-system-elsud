@@ -96,39 +96,42 @@
 
         </div>
         <div class="col-md-3">
-            <h2>Add Tag</h2>
-            <form class="form-horizontal" role="form" id="addForm" action="/addTag"  method="POST">
-                <div class="mb-3">
-                    <label class="form-label"> Tag </label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="tag"
-                            name="tag"
-                    />
-                    <p class="text-danger"
-                    ></p>
-                </div>
-                <div class="form-group row">
-                        <div class="offset-md-4 col-md-8">
-                            <input type="hidden" name="postId" th:value="${post.postId}" />
-                            <button type="submit"
-                                    id="addButton"
-                                    class="btn btn-primary">
-                                Add Tag
-                            </button>
-                        </div>
-                </div>
+            <div class="row">
+                <h2>Add Tag</h2>
+                <form class="form-horizontal" role="form" id="addForm" action="/addTag"  method="POST">
+                    <div class="mb-3">
+                        <label class="form-label"> Tag </label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="tag"
+                                name="tag"
+                        />
+                        <p class="text-danger"
+                        ></p>
+                    </div>
+                    <div class="form-group row">
+                            <div class="offset-md-4 col-md-8">
+                                <input type="hidden" name="postId" th:value="${post.postId}" />
+                                <button type="submit"
+                                        id="addButton"
+                                        class="btn btn-primary">
+                                    Add Tag
+                                </button>
+                            </div>
+                    </div>
 
-            </form>
-        </div>
-
-        <div class="col-md-3">
-        <!-- search bar goes here            <-->
-            <div th:replace="blog/search :: search"></div>
-        </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                <!-- search bar goes here            <-->
+                    <div th:replace="blog/search :: search"></div>
+                </div>
+            </div>
     </div>
     <br /><br /><br />
+</div>
 </div>
 <div th:replace="blog/footer :: footer"></div>
 </body>
