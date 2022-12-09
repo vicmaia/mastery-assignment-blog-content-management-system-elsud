@@ -195,6 +195,13 @@ public String displayPendingPost(Model model) throws AuthorizationException {
         model.addAttribute("post", post);
         return "manager/editPost";
     }
+    
+    @RequestMapping(value ="/manager/editPost/rejected/{postId}", method = RequestMethod.GET)
+    public String editRejectedPost(@PathVariable Integer postId, Model model) {
+        Post post = postDao.getRejectedPostById(postId);
+        model.addAttribute("post", post);
+        return "manager/editRejectedPost";
+    }
 
     @RequestMapping(value = "/manager/editPost/{postId}", method = RequestMethod.POST)
     public String updatePost(@PathVariable Integer postId, HttpServletRequest request, Model model) throws AuthorizationException {
@@ -217,6 +224,29 @@ public String displayPendingPost(Model model) throws AuthorizationException {
         model.addAttribute("post", currentPost);
 
         return "redirect:/manager/pending";
+    }
+    
+    @RequestMapping(value = "/manager/editPost/rejected/{postId}", method = RequestMethod.POST)
+    public String updateRejectedPost(@PathVariable Integer postId, HttpServletRequest request, Model model) throws AuthorizationException {
+        Post currentPost = service.getPostById(postId);
+
+        currentPost.setTitle(request.getParameter("title"));
+        currentPost.setDescription(request.getParameter("shortDescription"));
+        currentPost.setPostContent(request.getParameter("content"));
+        if (request.getParameter("publishDate") != null && request.getParameter("publishDate") != "") {
+            currentPost.setPublishDate(LocalDate.parse(request.getParameter("publishDate")));
+        }
+        if (request.getParameter("expireDate") != null && request.getParameter("expireDate") != "") {
+            currentPost.setExpireDate(LocalDate.parse(request.getParameter("expireDate")));
+        }
+        //currentPost.setPublishDate(request.getParameter("publishDate"));
+        //currentPost.setExpireDate(request.getParameter("expireDate"));
+
+        service.editPost(currentPost, MANAGER);
+
+        model.addAttribute("post", currentPost);
+
+        return "redirect:/manager/rejected";
     }
     
     @RequestMapping(value = "/manager/rejected/resubmit/{postId}", method = {RequestMethod.POST, RequestMethod.GET})
