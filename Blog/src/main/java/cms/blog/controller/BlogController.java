@@ -95,17 +95,6 @@ public class BlogController {
         return "login";
     }
     
-    @RequestMapping("/hashtag")
-    public String getPostsByHashtag(@RequestParam int postId,
-                              Model model){
-        
-        Permission permission = USER;
-        List<Post> hashtagResponse = service.getPostsByTag(postId, permission);
-        model.addAttribute("hashtagResponse", hashtagResponse);
-        
-        
-        return "blog/hashtags";
-    }
     
 
     
