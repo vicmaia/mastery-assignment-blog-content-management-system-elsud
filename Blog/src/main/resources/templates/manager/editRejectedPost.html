@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<div th:replace="/manager/header :: header"></div>
+<body>
+<div th:replace="/manager/header :: navbar"></div>
+<br />
+
+<div class="container">
+<h1>Edit Post</h1>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label"> Title </label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        required
+                        th:value="${post.title}"
+                />
+                <p class="text-danger"
+                ></p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Short Description</label>
+                <textarea
+                        class="form-control"
+                        id="shortDescription"
+                        placeholder="Enter post short description"
+                        rows="3"
+                        name="shortDescription"
+                        th:text="${post.description}"
+
+                >
+
+                </textarea>
+                <p class="text-danger"></p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Content</label>
+                <textarea
+                        class="form-control"
+                        id="content"
+                        placeholder="Enter post content"
+                        rows="12"
+                        name="content"
+                        required
+                        th:text="${post.postContent}"
+
+                >
+                </textarea>
+                <p class="text-danger"></p>
+            </div>
+
+            <!--div class="mb-3">
+                <label class="form-label">Tags</label>
+                <textarea
+                        class="form-control"
+                        id="tags"
+                        placeholder="Enter tags"
+                        rows="3"
+                        name="tags"
+                >
+
+                </textarea>
+                <p class="text-danger"></p>
+            </div-->
+
+            <div class="mb-3">
+                <label for="publishDate">Publish Date:</label>
+
+                <input type="date" id="publishDate" name="publishDate">
+                       <!--th:value="${post.publishDate}"
+                       min="2022-01-01" max="2040-12-31"-->
+            </div>
+
+            <div class="mb-3">
+                <label for="expireDate">Expire Date:</label>
+
+                <input type="date" id="expireDate" name="expireDate">
+                       <!--th:value="${post.expireDate}"
+                       min="2022-01-01" max="2040-12-31"-->
+            </div>
+
+            <input type="hidden" name="id" th:value="${post.postId}" />
+            <button type="submit" class="btn btn-primary">Submit Changes</button>
+        </form>
+
+    </div>
+</div>
+
+<div th:replace="blog/footer :: footer"></div>
+</body>
+</html>
