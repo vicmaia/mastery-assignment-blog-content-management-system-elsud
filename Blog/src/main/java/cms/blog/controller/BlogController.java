@@ -94,7 +94,24 @@ public class BlogController {
     public String login(Model model){
         return "login";
     }
-    
+
+    @PostMapping("/addTag")
+    public String addTag(HttpServletRequest request, Model model) {
+        String name = request.getParameter("tag");
+        int postId = Integer.parseInt(request.getParameter("postId"));
+        service.addTagForPost(name, postId);
+        Post post = service.getPostById(postId);
+        model.addAttribute("post", post);
+        return "redirect:/";
+    }
+
+    @GetMapping("/searchByTag/{tagId}")
+    public String searchByTag(@PathVariable("tagId") int tagId,
+                            Model model){
+        List<Post> posts = service.getPostsByTag(tagId, USER);
+        model.addAttribute("postResponse", posts);
+        return "blog/view_posts";
+    }
     
 
     
