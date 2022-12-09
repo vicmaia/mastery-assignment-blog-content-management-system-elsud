@@ -63,7 +63,7 @@
         <tbody>
           <!--FIX FIX FIX-->
           <tr th:each="blog : ${blogs}">
-            <td><a class="nav-link active" th:href="@{/admin/{postUrl}(postUrl=${blog.postId})}"><h3 th:text="${blog.title}"></h3></a></td>
+            <td th:text="${blog.title}"></td>
             <td th:text="${blog.status}"></td>
             <td><a class="nav-link active" th:href="@{/admin/editPost/{postId}(postId=${blog.postId})}"> Edit </a></td>
             <td><a class="nav-link active" th:href="@{/admin/deletePost/{postId}(postId=${blog.postId})}"> Delete </a></td>
