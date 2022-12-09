@@ -218,6 +218,13 @@ public String displayPendingPost(Model model) throws AuthorizationException {
 
         return "redirect:/manager/pending";
     }
+    
+    @RequestMapping(value = "/manager/rejected/resubmit/{postId}", method = {RequestMethod.POST, RequestMethod.GET})
+    public String resubmit(@PathVariable Integer postId, Model model) throws AuthorizationException {
+        service.sendToApprove(postId, MANAGER);
+
+        return "redirect:/manager/rejected";
+    }
 
 
 }
