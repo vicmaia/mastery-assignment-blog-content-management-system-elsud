@@ -68,8 +68,8 @@ public class PostDaoDbImpl implements PostDao {
     public boolean editPost(Post post) {
         final String UPDATE_POST = "UPDATE post SET creationTime=?, title=?, descriptionField=?, postContent=?, "
                 + "publishDate=?, expireDate=?, editTime=? WHERE postId=?";
-        final String UPDATE_POST_WITH_STATUS = "UPDATE post SET creationTime=?, title=?, descriptionField=?, postContent=?, "
-                + "publishDate=?, expireDate=?, editTime=?, statusId=? WHERE postId=?";
+        //final String UPDATE_POST_WITH_STATUS = "UPDATE post SET creationTime=?, title=?, descriptionField=?, postContent=?, "
+        //        + "publishDate=?, expireDate=?, editTime=?, statusId=? WHERE postId=?";
         Date publishDate = null;
         Date expireDate = null;
         Timestamp creationTime = null;
@@ -87,12 +87,12 @@ public class PostDaoDbImpl implements PostDao {
         if (post.getEditTime() != null) {
             editTime = Timestamp.valueOf(post.getEditTime());
         }
-        if (post.getStatus() == Status.REJECTED) {
-            int status = sendToApprove(post.getPostId());
-            return jdbcTemplate.update(
-                UPDATE_POST_WITH_STATUS, creationTime, post.getTitle(), post.getDescription(),
-                post.getPostContent(), publishDate, expireDate, editTime, status, post.getPostId()) > 0;
-        }
+        //if (post.getStatus() == Status.REJECTED) {
+        //    int status = sendToApprove(post.getPostId());
+        //    return jdbcTemplate.update(
+        //        UPDATE_POST_WITH_STATUS, creationTime, post.getTitle(), post.getDescription(),
+        //        post.getPostContent(), publishDate, expireDate, editTime, status, post.getPostId()) > 0;
+        //}
 
         return jdbcTemplate.update(
                 UPDATE_POST, creationTime, post.getTitle(), post.getDescription(),
@@ -327,7 +327,7 @@ public class PostDaoDbImpl implements PostDao {
      */
     @Transactional
     @Override
-    public int sendToApprove(int postId) {
+    public void sendToApprove(int postId) {
         final String GET_STATUS_ID = "SELECT statusId FROM status WHERE statusName = ?;";
         int statusId = jdbcTemplate.queryForObject(
                 GET_STATUS_ID, Integer.class, Status.IN_WORK.toString());
@@ -337,7 +337,7 @@ public class PostDaoDbImpl implements PostDao {
 
         final String DELETE_REJECTED = "DELETE FROM rejectionReason WHERE postId = ?;";
         jdbcTemplate.update(DELETE_REJECTED, postId);
-        return statusId;
+        //return statusId;
     }
 
     /**
