@@ -155,6 +155,7 @@ public class PostDaoStub implements PostDao {
     }
 
     @Override
-    public void sendToApprove(int postId) {
+    public int sendToApprove(int postId) {
+        return 1;
     }
 }

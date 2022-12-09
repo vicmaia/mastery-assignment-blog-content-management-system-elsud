@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+>
+<div th:replace="blog/header :: header"></div>
+<body>
+<div th:replace="blog/header :: navbar"></div>
+
+    <h2>There is some problem in processing your request.</h2>
+    <p>Click <a th:href="@{/}">Home</a> to go to home page</p>
+
+
+</div>
+<div th:replace="blog/footer :: footer"></div>
+</body>
+</html>

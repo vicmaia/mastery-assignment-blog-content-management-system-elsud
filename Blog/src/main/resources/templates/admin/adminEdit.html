@@ -63,6 +63,7 @@
                   class="form-control"
                   id="title"
                   name="title"
+                  required
                   th:value="${post.title}"
           />
           <p class="text-danger"
@@ -117,6 +118,7 @@
                   placeholder="Enter post content"
                   rows="12"
                   name="content"
+                  required
                   th:text="${post.postContent}"
 
           >

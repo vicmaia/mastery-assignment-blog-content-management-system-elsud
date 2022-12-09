@@ -38,5 +38,5 @@ public interface PostDao {
 
     public void rejectPost(int postId, String reason);
 
-    public void sendToApprove(int postId);
+    public int sendToApprove(int postId);
 }

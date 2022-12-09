@@ -14,6 +14,7 @@ import cms.blog.dto.RejectedPost;
 import cms.blog.service.AuthorizationException;
 import cms.blog.service.ServiceLayer;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,8 +162,14 @@ public String displayPendingPost(Model model) throws AuthorizationException {
         post.setTitle(title);
         post.setPostContent(content);
         post.setDescription(shortDescription);
-        post.setPublishDate(service.parseDateInput(pubDate));
-        post.setExpireDate(service.parseDateInput(expDate));
+        if (pubDate != null && pubDate != "") {
+            post.setPublishDate(LocalDate.parse(pubDate));
+        }
+        if (expDate  != null && expDate != "" ) {
+            post.setExpireDate(LocalDate.parse(expDate ));
+        }
+        //post.setPublishDate(service.parseDateInput(pubDate));
+        //post.setExpireDate(service.parseDateInput(expDate));
         service.addPost(post, MANAGER);
 
         return "redirect:/manager/pending";
@@ -196,8 +203,14 @@ public String displayPendingPost(Model model) throws AuthorizationException {
         currentPost.setTitle(request.getParameter("title"));
         currentPost.setDescription(request.getParameter("shortDescription"));
         currentPost.setPostContent(request.getParameter("content"));
-        currentPost.setPublishDate(request.getParameter("publishDate"));
-        currentPost.setExpireDate(request.getParameter("expireDate"));
+        if (request.getParameter("publishDate") != null && request.getParameter("publishDate") != "") {
+            currentPost.setPublishDate(LocalDate.parse(request.getParameter("publishDate")));
+        }
+        if (request.getParameter("expireDate") != null && request.getParameter("expireDate") != "") {
+            currentPost.setExpireDate(LocalDate.parse(request.getParameter("expireDate")));
+        }
+        //currentPost.setPublishDate(request.getParameter("publishDate"));
+        //currentPost.setExpireDate(request.getParameter("expireDate"));
 
         service.editPost(currentPost, MANAGER);
 
