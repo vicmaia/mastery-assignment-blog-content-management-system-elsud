@@ -2,9 +2,9 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
 >
-<div th:replace="manager/header :: header"></div>
+<div th:replace="blog/manager/header :: header"></div>
 <body>
-<div th:replace="manager/header :: navbar"></div>
+<div th:replace="blog/manager/header :: navbar"></div>
 <br />
 
 <div class="container">
@@ -68,6 +68,23 @@
                 </textarea>
                 <p class="text-danger"></p>
             </div>
+
+            <div class="mb-3">
+                <label for="publishDate">Publish Date:</label>
+
+                <input type="date" id="publishDate" name="publishDate"
+                       th:value="${post.publishDate}"
+                       min="2022-01-01" max="2040-12-31">
+            </div>
+
+            <div class="mb-3">
+                <label for="expireDate">Expire Date:</label>
+
+                <input type="date" id="expireDate" name="expireDate"
+                       th:value="${post.expireDate}"
+                       min="2022-01-01" max="2040-12-31">
+            </div>
+
             <input type="hidden" name="id" th:value="${post.postId}" />
             <button type="submit" class="btn btn-primary">Request Approval</button>
         </form>
